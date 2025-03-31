@@ -1,0 +1,488 @@
+body {
+    background-color: #f8f9fa;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+header {
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.card {
+    border: none;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+}
+
+.card-title {
+    color: #2c3e50;
+    font-weight: 600;
+}
+
+.form-control:focus {
+    border-color: #3498db;
+    box-shadow: 0 0 0 0.2rem rgba(52, 152, 219, 0.25);
+}
+
+.btn-primary {
+    background-color: #3498db;
+    border-color: #3498db;
+}
+
+.btn-primary:hover {
+    background-color: #2980b9;
+    border-color: #2980b9;
+}
+
+.btn-warning {
+    background-color: #ffc107;
+    border-color: #ffc107;
+    color: #000;
+}
+
+.btn-warning:hover {
+    background-color: #e0a800;
+    border-color: #e0a800;
+    color: #000;
+}
+
+.btn-warning i {
+    color: #000;
+}
+
+.list-group-item {
+    border: none;
+    margin-bottom: 10px;
+    border-radius: 8px !important;
+    background-color: #ffffff;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.list-group-item:hover {
+    transform: translateY(-2px);
+    transition: transform 0.2s ease;
+}
+
+.status-badge {
+    padding: 5px 10px;
+    border-radius: 15px;
+    font-size: 0.8em;
+}
+
+.status-pendiente {
+    background-color: #ffeeba;
+    color: #856404;
+}
+
+.status-en_progreso {
+    background-color: #cce5ff;
+    color: #004085;
+}
+
+.status-completado {
+    background-color: #d4edda;
+    color: #155724;
+}
+
+/* Estilos para el modal de tareas */
+.modal-content {
+    border-radius: 12px;
+    border: none;
+}
+
+.modal-header {
+    background-color: #f8f9fa;
+    border-bottom: 1px solid #dee2e6;
+    border-radius: 12px 12px 0 0;
+}
+
+.modal-body {
+    padding: 20px;
+}
+
+.modal-footer {
+    background-color: #f8f9fa;
+    border-top: 1px solid #dee2e6;
+    border-radius: 0 0 12px 12px;
+}
+
+/* Estilos para las tareas */
+.task-item {
+    transition: all 0.3s ease;
+}
+
+.task-item.completed {
+    background-color: #f8f9fa;
+    opacity: 0.8;
+}
+
+.task-item.completed .form-check-label {
+    text-decoration: line-through;
+    color: #6c757d;
+}
+
+.form-check-input:checked {
+    background-color: #28a745;
+    border-color: #28a745;
+}
+
+/* Estilos para las tarjetas de proyecto */
+.project-card {
+    background-color: white;
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 15px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.project-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.project-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.project-header h3 {
+    margin: 0;
+    font-size: 1.2rem;
+    color: #2c3e50;
+}
+
+.project-actions {
+    display: flex;
+    gap: 5px;
+}
+
+.project-members {
+    margin-top: 15px;
+}
+
+.project-members h4 {
+    font-size: 0.9rem;
+    color: #6c757d;
+    margin-bottom: 8px;
+}
+
+.member-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+}
+
+.member-badge {
+    background-color: #e9ecef;
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 0.8em;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.member-badge i {
+    color: #6c757d;
+}
+
+/* Mejoras en los botones */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.btn i {
+    font-size: 0.9em;
+}
+
+/* Mejoras en el modal */
+.modal-dialog {
+    max-width: 800px;
+}
+
+.modal-body {
+    max-height: 70vh;
+    overflow-y: auto;
+}
+
+/* Estilos para la vista Kanban */
+.kanban-column {
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    padding: 15px;
+    min-height: 500px;
+    border: 1px solid #dee2e6;
+    transition: background-color 0.2s ease;
+}
+
+.kanban-column:hover {
+    background-color: #e9ecef;
+}
+
+.kanban-list {
+    min-height: 400px;
+    padding: 10px;
+    transition: background-color 0.2s ease;
+}
+
+.kanban-list.drag-over {
+    background-color: #e9ecef;
+    border-radius: 8px;
+}
+
+.kanban-task {
+    background-color: white;
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 10px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    cursor: move;
+    border: 1px solid #dee2e6;
+    transition: all 0.2s ease;
+    user-select: none;
+}
+
+.kanban-task-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.kanban-task-header h6 {
+    margin: 0;
+    flex: 1;
+    padding-right: 10px;
+}
+
+.kanban-task-header .btn-close {
+    padding: 0.5rem;
+    margin: -0.5rem;
+    opacity: 0.5;
+    transition: opacity 0.2s ease;
+}
+
+.kanban-task-header .btn-close:hover {
+    opacity: 1;
+}
+
+.kanban-task p {
+    margin-bottom: 5px;
+    font-size: 0.9em;
+    color: #6c757d;
+}
+
+.kanban-task.dragging {
+    opacity: 0.5;
+    background-color: #f8f9fa;
+    transform: scale(1.02);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.kanban-task:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.kanban-task h6 {
+    margin-bottom: 5px;
+    color: #2c3e50;
+}
+
+.kanban-task p {
+    margin-bottom: 5px;
+    font-size: 0.9em;
+    color: #6c757d;
+}
+
+.members-badge {
+    display: inline-block;
+    background-color: #e9ecef;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 0.8em;
+    margin-right: 5px;
+    margin-bottom: 5px;
+    color: #495057;
+}
+
+/* Estilos para los miembros */
+.members-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    margin-top: 5px;
+}
+
+.member-avatar {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background-color: #3498db;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8em;
+}
+
+/* Mejoras en la responsividad */
+@media (max-width: 768px) {
+    .container {
+        padding: 10px;
+    }
+
+    .modal-dialog {
+        margin: 10px;
+    }
+
+    .kanban-column {
+        margin-bottom: 20px;
+        min-height: 300px;
+    }
+
+    .kanban-list {
+        min-height: 200px;
+    }
+}
+
+/* Mejoras en los botones de acción */
+.project-actions .btn,
+.task-actions .btn {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.875rem;
+    line-height: 1.5;
+    border-radius: 0.2rem;
+}
+
+.project-actions .btn i,
+.task-actions .btn i {
+    margin-right: 0.25rem;
+}
+
+/* Estilos para las tareas en el modal */
+#taskList .list-group-item {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 15px;
+    margin-bottom: 10px;
+    border-radius: 8px;
+    background-color: #ffffff;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    transition: all 0.2s ease;
+}
+
+#taskList .list-group-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+#taskList .list-group-item .task-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+
+#taskList .list-group-item .task-content {
+    margin-left: 25px;
+}
+
+#taskList .list-group-item .task-description {
+    color: #6c757d;
+    font-size: 0.9em;
+    margin: 5px 0;
+}
+
+#taskList .list-group-item .task-members {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    margin-top: 8px;
+}
+
+#taskList .list-group-item .task-actions {
+    display: flex;
+    gap: 5px;
+}
+
+#taskList .list-group-item.completed {
+    background-color: #f8f9fa;
+    opacity: 0.8;
+}
+
+#taskList .list-group-item.completed .task-title {
+    text-decoration: line-through;
+    color: #6c757d;
+}
+
+/* Estilos para el campo de miembros en el formulario de tareas */
+#taskMembers {
+    position: relative;
+}
+
+#taskMembers::placeholder {
+    color: #6c757d;
+    font-size: 0.85em;
+    font-style: italic;
+}
+
+.members-helper {
+    font-size: 0.85em;
+    color: #6c757d;
+    margin-top: 0.25rem;
+    font-style: italic;
+}
+
+.members-helper i {
+    color: #28a745;
+    margin-right: 0.25rem;
+}
+
+.members-helper.warning i {
+    color: #ffc107;
+}
+
+.members-helper.error {
+    color: #dc3545;
+}
+
+.members-helper.error i {
+    color: #dc3545;
+}
+
+.available-members {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    margin-top: 0.5rem;
+}
+
+.available-member {
+    background-color: #e9ecef;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 0.8em;
+    color: #495057;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.available-member:hover {
+    background-color: #dee2e6;
+    transform: translateY(-1px);
+}
