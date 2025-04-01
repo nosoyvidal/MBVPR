@@ -6,10 +6,40 @@ const taskForm = document.getElementById('taskForm');
 const taskList = document.getElementById('taskList');
 const projectsView = document.getElementById('projectsView');
 const kanbanView = document.getElementById('kanbanView');
+const taskTagInput = document.getElementById('taskTagInput');
+const tagColor = document.getElementById('tagColor');
+const addTagBtn = document.getElementById('addTagBtn');
+const selectedTags = document.getElementById('selectedTags');
+const emojiPickerBtn = document.getElementById('emojiPickerBtn');
 
 // Funciones para manejar localStorage
 const PROJECTS_STORAGE_KEY = 'projectmanager_projects';
 const TASKS_STORAGE_KEY = 'projectmanager_tasks';
+
+// Variables para manejar las etiquetas
+let currentTags = [];
+let selectedEmoji = '🏷️'; // Emoji por defecto
+
+// Etiquetas de estado predefinidas
+const STATUS_TAGS = {
+    pendiente: { name: 'Pendiente', color: '#ffc107', emoji: '⏳' },
+    en_progreso: { name: 'En Progreso', color: '#0dcaf0', emoji: '🔄' },
+    completado: { name: 'Completado', color: '#198754', emoji: '✅' }
+};
+
+// Emojis predefinidos para el selector
+const EMOJI_CATEGORIES = {
+    'Frecuentes': ['🏷️', '📌', '⭐', '💡', '🎯', '📝', '📋', '📅', '⏰', '🔔'],
+    'Prioridad': ['🔴', '🟡', '🟢', '⚪', '⚫'],
+    'Estado': ['📊', '📈', '📉', '✅', '❌', '⚠️', '⏳', '🔄'],
+    'Tipo': ['💻', '📱', '🔧', '🎨', '📚', '💬', '📧', '🔍'],
+    'Personas': ['👤', '👥', '👨‍💻', '👩‍💻', '👨‍🎨', '👩‍🎨', '👨‍🔧', '👩‍🔧'],
+    'Animales': ['🐶', '🐱', '🐭', '🐹', '🐰', '🐻', '🐼', '🐨'],
+    'Plantas': ['🌸', '🌷', '🌹', '🌺', '🌻', '🌼', '🌽', '🌾'],
+    'Objetos': ['🎁', '🎈', '🎉', '🎊', '🎄', '🎋', '🎍', '🎎'],
+    'Colores': ['🔴', '🟡', '🟢', '⚪', '⚫'],
+    'Estados': ['📊', '📈', '📉', '✅', '❌', '⚠️', '⏳', '🔄']
+};
 
 function getProjects() {
     try {
@@ -63,18 +93,28 @@ function createProject(projectData) {
 }
 
 function deleteProject(projectId) {
-    const projects = getProjects();
-    const filteredProjects = projects.filter(p => p.id !== projectId);
-    saveProjects(filteredProjects);
+    const project = getProjects().find(p => p.id === projectId);
+    if (!project) return;
 
-    // También eliminar las tareas asociadas al proyecto
-    const tasks = getTasks();
-    const filteredTasks = tasks.filter(t => t.projectId !== projectId);
-    saveTasks(filteredTasks);
+    const projectName = project.name;
+    const confirmationInput = prompt(`Para eliminar el proyecto "${projectName}", escribe su nombre exactamente:`);
+    
+    if (confirmationInput === projectName) {
+        const projects = getProjects();
+        const filteredProjects = projects.filter(p => p.id !== projectId);
+        saveProjects(filteredProjects);
 
-    // Actualizar la vista
-    renderProjects(filteredProjects);
-    renderKanban();
+        // También eliminar las tareas asociadas al proyecto
+        const tasks = getTasks();
+        const filteredTasks = tasks.filter(t => t.projectId !== projectId);
+        saveTasks(filteredTasks);
+
+        // Actualizar la vista
+        renderProjects(filteredProjects);
+        renderKanban();
+    } else {
+        alert('El nombre del proyecto no coincide. La eliminación ha sido cancelada.');
+    }
 }
 
 // Función para obtener los miembros disponibles del proyecto
@@ -95,6 +135,122 @@ function validateTaskMembers(projectId, members) {
     return members;
 }
 
+// Función para crear el selector de emojis
+function createEmojiPicker() {
+    const picker = document.createElement('div');
+    picker.className = 'emoji-picker';
+    picker.innerHTML = `
+        <div class="emoji-picker-header">
+            <h6>Seleccionar Emoji</h6>
+            <button class="btn-close" onclick="closeEmojiPicker()"></button>
+        </div>
+        <div class="emoji-picker-body">
+            ${Object.entries(EMOJI_CATEGORIES).map(([category, emojis]) => `
+                <div class="emoji-category">
+                    <h6>${category}</h6>
+                    <div class="emoji-grid">
+                        ${emojis.map(emoji => `
+                            <button class="emoji-btn ${emoji === selectedEmoji ? 'selected' : ''}" 
+                                    onclick="selectEmoji('${emoji}')">
+                                ${emoji}
+                            </button>
+                        `).join('')}
+                    </div>
+                </div>
+            `).join('')}
+        </div>
+    `;
+    return picker;
+}
+
+// Función para mostrar el selector de emojis
+function showEmojiPicker() {
+    const picker = createEmojiPicker();
+    document.body.appendChild(picker);
+    
+    // Posicionar el selector cerca del botón
+    const btnRect = emojiPickerBtn.getBoundingClientRect();
+    const pickerRect = picker.getBoundingClientRect();
+    
+    // Calcular la posición
+    let top = btnRect.bottom + window.scrollY;
+    let left = btnRect.left;
+    
+    // Ajustar si el selector se sale de la ventana
+    if (left + pickerRect.width > window.innerWidth) {
+        left = window.innerWidth - pickerRect.width;
+    }
+    
+    if (top + pickerRect.height > window.innerHeight) {
+        top = btnRect.top - pickerRect.height + window.scrollY;
+    }
+    
+    picker.style.top = `${top}px`;
+    picker.style.left = `${left}px`;
+}
+
+// Función para cerrar el selector de emojis
+function closeEmojiPicker() {
+    const picker = document.querySelector('.emoji-picker');
+    if (picker) {
+        picker.remove();
+    }
+}
+
+// Función para seleccionar un emoji
+function selectEmoji(emoji) {
+    selectedEmoji = emoji;
+    closeEmojiPicker();
+}
+
+// Event listener para el botón de emoji
+emojiPickerBtn.addEventListener('click', showEmojiPicker);
+
+// Cerrar el selector al hacer clic fuera
+document.addEventListener('click', (e) => {
+    if (!e.target.closest('.emoji-picker') && !e.target.closest('#emojiPickerBtn')) {
+        closeEmojiPicker();
+    }
+});
+
+// Modificar la función addTag
+function addTag() {
+    const tagName = taskTagInput.value.trim();
+    if (tagName) {
+        const tag = {
+            name: tagName,
+            color: tagColor.value,
+            emoji: selectedEmoji
+        };
+        currentTags.push(tag);
+        renderTags();
+        taskTagInput.value = '';
+        selectedEmoji = '🏷️'; // Resetear el emoji seleccionado
+    }
+}
+
+// Función para renderizar las etiquetas
+function renderTags() {
+    selectedTags.innerHTML = currentTags.map((tag, index) => `
+        <span class="tag-badge" style="background-color: ${tag.color}" data-index="${index}">
+            <span class="tag-emoji" onclick="changeTagEmoji(${index})">${tag.emoji}</span>
+            <span class="tag-name">${tag.name}</span>
+            <i class="fas fa-times remove-tag" onclick="removeTag(${index})"></i>
+        </span>
+    `).join('');
+}
+
+// Event listener para el botón de agregar etiqueta
+addTagBtn.addEventListener('click', addTag);
+
+// Event listener para la tecla Enter en el input de etiquetas
+taskTagInput.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') {
+        e.preventDefault();
+        addTag();
+    }
+});
+
 // Modificar la función createTask
 function createTask(projectId, taskData) {
     const tasks = getTasks();
@@ -110,7 +266,8 @@ function createTask(projectId, taskData) {
         createdAt: new Date().toISOString(),
         completed: false,
         status: 'pendiente',
-        members: members
+        members: members,
+        tags: [...currentTags] // Crear una copia del array de etiquetas
     };
     tasks.push(newTask);
     saveTasks(tasks);
@@ -164,6 +321,17 @@ function updateTaskStatus(taskId, newStatus) {
     if (task) {
         task.status = newStatus;
         task.completed = newStatus === 'completado';
+        
+        // Actualizar etiquetas de estado
+        const statusTag = {
+            ...STATUS_TAGS[newStatus],
+            isStatusTag: true
+        };
+        
+        // Eliminar etiquetas de estado anteriores
+        task.tags = task.tags.filter(tag => !tag.isStatusTag);
+        task.tags.push(statusTag);
+        
         saveTasks(tasks);
     }
 }
@@ -177,8 +345,11 @@ function renderProjects() {
                 <div class="project-header">
                     <h3>${project.name}</h3>
                     <div class="project-actions">
-                        <button class="btn btn-sm btn-primary" onclick="openTaskModal('${project.id}')">
-                            <i class="fas fa-tasks"></i> Tareas
+                        <button class="btn btn-sm btn-success" onclick="openTaskModal('${project.id}', 'create')">
+                            <i class="fas fa-plus"></i> Nueva Tarea
+                        </button>
+                        <button class="btn btn-sm btn-primary" onclick="openTaskModal('${project.id}', 'view')">
+                            <i class="fas fa-list"></i> Ver Tareas
                         </button>
                         <button class="btn btn-sm btn-warning" onclick="editProject('${project.id}')">
                             <i class="fas fa-edit"></i>
@@ -233,6 +404,14 @@ function renderTasks(projectId) {
                 </div>
                 <div class="task-content">
                     <div class="task-description">${task.description || ''}</div>
+                    <div class="task-tags">
+                        ${(task.tags || []).map(tag => `
+                            <span class="tag-badge ${tag.isStatusTag ? 'status-tag' : ''}" style="background-color: ${tag.color}">
+                                <span class="tag-emoji">${tag.emoji}</span>
+                                <span class="tag-name">${tag.name}</span>
+                            </span>
+                        `).join('')}
+                    </div>
                     <div class="task-members">
                         ${(task.members || []).map(member => `
                             <span class="members-badge">
@@ -272,9 +451,19 @@ function renderKanbanTasks(tasks) {
                 <button class="btn-close btn-close-white" onclick="deleteTask('${task.id}')"></button>
             </div>
             <p>${task.description || ''}</p>
+            <div class="task-tags">
+                ${(task.tags || []).map(tag => `
+                    <span class="tag-badge ${tag.isStatusTag ? 'status-tag' : ''}" style="background-color: ${tag.color}">
+                        <span class="tag-emoji">${tag.emoji}</span>
+                        <span class="tag-name">${tag.name}</span>
+                    </span>
+                `).join('')}
+            </div>
             <div class="members-container">
                 ${(task.members || []).map(member => `
-                    <span class="members-badge">${member}</span>
+                    <span class="members-badge">
+                        <i class="fas fa-user"></i> ${member}
+                    </span>
                 `).join('')}
             </div>
         </div>
@@ -407,21 +596,37 @@ function addMemberToTask(member) {
 }
 
 // Modificar la función openTaskModal
-function openTaskModal(projectId) {
+function openTaskModal(projectId, mode = 'view') {
     const project = getProjects().find(p => p.id === projectId);
     if (project) {
         document.getElementById('currentProjectId').value = projectId;
         document.getElementById('currentProjectName').textContent = project.name;
-        renderTasks(projectId);
-
-        // Resetear el formulario y el estado de edición
-        taskForm.reset();
-        delete taskForm.dataset.editId;
+        
+        // Configurar el modal según el modo
+        const taskForm = document.getElementById('taskForm');
+        const taskList = document.getElementById('taskList');
         const submitButton = taskForm.querySelector('button[type="submit"]');
-        submitButton.innerHTML = '<i class="fas fa-plus"></i> Agregar Tarea';
-
-        // Mostrar miembros disponibles
-        showAvailableMembers(projectId);
+        
+        if (mode === 'create') {
+            // Modo creación
+            taskForm.style.display = 'block';
+            taskList.style.display = 'none';
+            submitButton.innerHTML = '<i class="fas fa-plus"></i> Crear Tarea';
+            taskForm.reset();
+            delete taskForm.dataset.editId;
+            
+            // Resetear las etiquetas
+            currentTags = [];
+            renderTags();
+            
+            // Mostrar miembros disponibles
+            showAvailableMembers(projectId);
+        } else {
+            // Modo visualización
+            taskForm.style.display = 'none';
+            taskList.style.display = 'block';
+            renderTasks(projectId);
+        }
 
         if (taskModal) {
             taskModal.show();
@@ -504,7 +709,8 @@ taskForm.addEventListener('submit', (e) => {
                 tasks[index] = {
                     ...tasks[index],
                     ...taskData,
-                    members: members
+                    members: members,
+                    tags: [...currentTags] // Crear una copia de las etiquetas actuales
                 };
                 saveTasks(tasks);
             }
@@ -518,6 +724,10 @@ taskForm.addEventListener('submit', (e) => {
         delete taskForm.dataset.editId;
         const submitButton = taskForm.querySelector('button[type="submit"]');
         submitButton.innerHTML = '<i class="fas fa-plus"></i> Agregar Tarea';
+
+        // Resetear las etiquetas
+        currentTags = [];
+        renderTags();
 
         renderTasks(projectId);
         renderKanban();
@@ -553,20 +763,32 @@ function editTask(taskId) {
     const task = getTasks().find(t => t.id === taskId);
     if (task) {
         const projectMembers = getProjectMembers(task.projectId);
+        
+        // Mostrar el formulario y ocultar la lista
+        const taskForm = document.getElementById('taskForm');
+        const taskList = document.getElementById('taskList');
+        taskForm.style.display = 'block';
+        taskList.style.display = 'none';
+        
+        // Restaurar los datos de la tarea
         document.getElementById('taskTitle').value = task.title;
         document.getElementById('taskDescription').value = task.description || '';
         document.getElementById('taskMembers').value = task.members.join(', ');
-
+        
+        // Restaurar las etiquetas
+        currentTags = task.tags ? [...task.tags] : [];
+        renderTags();
+        
         // Mostrar miembros disponibles
         showAvailableMembers(task.projectId);
-
+        
         // Cambiar el botón de submit
         const submitButton = taskForm.querySelector('button[type="submit"]');
         submitButton.innerHTML = '<i class="fas fa-save"></i> Actualizar Tarea';
-
+        
         // Agregar el ID de la tarea al formulario
         taskForm.dataset.editId = taskId;
-
+        
         // Asegurarse de que el modal esté abierto
         if (taskModal) {
             taskModal.show();

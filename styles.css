@@ -162,9 +162,77 @@ header {
     color: #2c3e50;
 }
 
+/* Estilos para los botones de acción del proyecto */
 .project-actions {
     display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.project-actions .btn {
+    display: inline-flex;
+    align-items: center;
     gap: 5px;
+    padding: 6px 12px;
+    font-size: 0.875rem;
+    border-radius: 6px;
+    transition: all 0.2s ease;
+}
+
+.project-actions .btn i {
+    font-size: 0.9em;
+}
+
+.project-actions .btn-success {
+    background-color: #28a745;
+    border-color: #28a745;
+    color: white;
+}
+
+.project-actions .btn-success:hover {
+    background-color: #218838;
+    border-color: #1e7e34;
+    color: white;
+    transform: translateY(-1px);
+}
+
+.project-actions .btn-primary {
+    background-color: #3498db;
+    border-color: #3498db;
+    color: white;
+}
+
+.project-actions .btn-primary:hover {
+    background-color: #2980b9;
+    border-color: #2980b9;
+    color: white;
+    transform: translateY(-1px);
+}
+
+.project-actions .btn-warning {
+    background-color: #ffc107;
+    border-color: #ffc107;
+    color: #000;
+}
+
+.project-actions .btn-warning:hover {
+    background-color: #e0a800;
+    border-color: #e0a800;
+    color: #000;
+    transform: translateY(-1px);
+}
+
+.project-actions .btn-danger {
+    background-color: #dc3545;
+    border-color: #dc3545;
+    color: white;
+}
+
+.project-actions .btn-danger:hover {
+    background-color: #c82333;
+    border-color: #bd2130;
+    color: white;
+    transform: translateY(-1px);
 }
 
 .project-members {
@@ -485,4 +553,301 @@ header {
 .available-member:hover {
     background-color: #dee2e6;
     transform: translateY(-1px);
+}
+
+/* Estilos para las etiquetas */
+.selected-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    padding: 0.5rem;
+    background-color: #f8f9fa;
+    border-radius: 0.5rem;
+    min-height: 3rem;
+}
+
+.tag-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.25rem 0.75rem;
+    border-radius: 1rem;
+    font-size: 0.875rem;
+    color: white;
+    margin: 0.25rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.tag-badge .tag-emoji {
+    font-size: 1rem;
+    cursor: pointer;
+    opacity: 0.9;
+    transition: opacity 0.2s ease;
+}
+
+.tag-badge .tag-emoji:hover {
+    opacity: 1;
+}
+
+.tag-badge.status-tag {
+    font-weight: 600;
+    cursor: default;
+    opacity: 0.9;
+}
+
+.tag-badge.status-tag:hover {
+    opacity: 1;
+}
+
+.tag-badge .tag-name {
+    margin-right: 0.5rem;
+}
+
+.tag-badge .remove-tag {
+    margin-left: 0.5rem;
+    font-size: 0.75rem;
+    opacity: 0.7;
+    transition: opacity 0.2s ease;
+}
+
+.tag-badge:hover .remove-tag {
+    opacity: 1;
+}
+
+.form-control-color {
+    width: 40px;
+    height: 38px;
+    padding: 0;
+    border: 1px solid #dee2e6;
+}
+
+#taskTagInput {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+}
+
+#tagColor {
+    border-radius: 0;
+}
+
+#addTagBtn {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+}
+
+/* Estilos para las etiquetas en las tareas */
+.task-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin: 8px 0;
+    padding: 8px;
+    background-color: rgba(0, 0, 0, 0.02);
+    border-radius: 8px;
+}
+
+.tag-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 10px;
+    border-radius: 15px;
+    font-size: 0.85em;
+    color: white;
+    margin-right: 5px;
+    margin-bottom: 5px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    transition: all 0.2s ease;
+}
+
+.tag-badge i {
+    margin-right: 4px;
+    font-size: 0.8em;
+}
+
+.tag-badge:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+}
+
+.tag-badge .tag-name {
+    margin-right: 5px;
+    font-weight: 500;
+}
+
+.tag-badge .remove-tag {
+    cursor: pointer;
+    opacity: 0.8;
+    transition: opacity 0.2s ease;
+    padding: 2px;
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+.tag-badge .remove-tag:hover {
+    opacity: 1;
+    background-color: rgba(255, 255, 255, 0.3);
+}
+
+/* Ajustes específicos para las etiquetas en el Kanban */
+.kanban-task .task-tags {
+    margin: 8px 0;
+    padding: 8px;
+    background-color: rgba(0, 0, 0, 0.02);
+    border-radius: 8px;
+}
+
+.kanban-task .tag-badge {
+    margin: 0.125rem;
+    font-size: 0.75rem;
+    padding: 0.125rem 0.5rem;
+}
+
+.kanban-task .tag-badge .tag-emoji {
+    font-size: 0.875rem;
+}
+
+.kanban-task .tag-badge .tag-name {
+    margin-right: 0.25rem;
+}
+
+/* Ajustes para las etiquetas en la lista de tareas */
+#taskList .list-group-item .task-tags {
+    margin: 8px 0;
+    padding: 8px;
+    background-color: rgba(0, 0, 0, 0.02);
+    border-radius: 8px;
+}
+
+#taskList .list-group-item .tag-badge {
+    font-size: 0.8em;
+    padding: 4px 10px;
+}
+
+/* Mejoras en la visualización de etiquetas en el modal */
+#selectedTags {
+    min-height: 40px;
+    padding: 8px;
+    border: 1px dashed #dee2e6;
+    border-radius: 8px;
+    background-color: #f8f9fa;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+#selectedTags:empty {
+    display: none;
+}
+
+/* Ajustes para el contenedor de etiquetas en las tareas */
+.task-content {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 8px;
+}
+
+.task-description {
+    color: #6c757d;
+    font-size: 0.9em;
+}
+
+.task-members {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+/* Estilos para el selector de emojis */
+.emoji-picker {
+    position: fixed;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    width: 300px;
+    max-height: 400px;
+    overflow-y: auto;
+    z-index: 9999;
+    border: 1px solid #dee2e6;
+}
+
+.emoji-picker-header {
+    position: sticky;
+    top: 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 15px;
+    border-bottom: 1px solid #dee2e6;
+    background-color: #f8f9fa;
+    border-radius: 8px 8px 0 0;
+    z-index: 10000;
+}
+
+.emoji-picker-header h6 {
+    margin: 0;
+    color: #495057;
+}
+
+.emoji-picker-body {
+    padding: 10px;
+}
+
+.emoji-category {
+    margin-bottom: 15px;
+}
+
+.emoji-category h6 {
+    color: #6c757d;
+    font-size: 0.875rem;
+    margin-bottom: 8px;
+}
+
+.emoji-grid {
+    display: grid;
+    grid-template-columns: repeat(8, 1fr);
+    gap: 5px;
+}
+
+.emoji-btn {
+    background: none;
+    border: none;
+    padding: 8px;
+    font-size: 1.25rem;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+}
+
+.emoji-btn:hover {
+    background-color: #f8f9fa;
+}
+
+.emoji-btn.selected {
+    background-color: #e9ecef;
+    transform: scale(1.1);
+}
+
+/* Ajustes para el botón de emoji */
+#emojiPickerBtn {
+    padding: 0.375rem 0.75rem;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+}
+
+#addTagBtn {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+}
+
+/* Ajustes para el input de color */
+#tagColor {
+    border-radius: 0;
+}
+
+/* Ajustes para el input de texto */
+#taskTagInput {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
 }
