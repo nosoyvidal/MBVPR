@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Manager</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon" href="imagen\Kira.ico">
+</head>
+
+<body>
+    <div class="container">
+        <header class="text-center my-4">
+            <h1> MBV Project Manager</h1>
+            <div class="btn-group mt-3">
+                <button class="btn btn-outline-primary" onclick="showProjectsView()">
+                    <i class="fas fa-list"></i> Lista de Proyectos
+                </button>
+                <button class="btn btn-outline-primary" onclick="showKanbanView()">
+                    <i class="fas fa-columns"></i> Vista Kanban
+                </button>
+            </div>
+        </header>
+
+        <div id="projectsView" class="view-container">
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Nuevo Proyecto</h5>
+                            <form id="projectForm">
+                                <div class="mb-3">
+                                    <label for="projectName" class="form-label">Nombre del Proyecto</label>
+                                    <input type="text" class="form-control" id="projectName" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="projectDescription" class="form-label">Descripción</label>
+                                    <textarea class="form-control" id="projectDescription" rows="3"></textarea>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="projectStatus" class="form-label">Estado</label>
+                                    <select class="form-select" id="projectStatus">
+                                        <option value="pendiente">Pendiente</option>
+                                        <option value="en_progreso">En Progreso</option>
+                                        <option value="completado">Completado</option>
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="projectMembers" class="form-label">Miembros (separados por coma)</label>
+                                    <input type="text" class="form-control" id="projectMembers"
+                                        placeholder="Juan, María, Carlos">
+                                </div>
+                                <div class="project-actions">
+                                    <button type="submit" class="btn btn-primary">
+                                        <i class="fas fa-save"></i> Guardar Proyecto
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-8">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Lista de Proyectos</h5>
+                            <div id="projectList" class="list-group">
+                                <!-- Los proyectos se cargarán dinámicamente aquí -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="kanbanView" class="view-container" style="display: none;">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Vista Kanban</h5>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="kanban-column">
+                                <h6 class="text-center mb-3">Pendiente</h6>
+                                <div id="pendingTasks" class="kanban-list"></div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="kanban-column">
+                                <h6 class="text-center mb-3">En Progreso</h6>
+                                <div id="inProgressTasks" class="kanban-list"></div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="kanban-column">
+                                <h6 class="text-center mb-3">Completado</h6>
+                                <div id="completedTasks" class="kanban-list"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Tareas -->
+    <div class="modal fade" id="taskModal" tabindex="-1" aria-labelledby="taskModalLabel">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="taskModalLabel">Tareas del Proyecto: <span id="currentProjectName"></span></h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="taskForm">
+                        <input type="hidden" id="currentProjectId">
+                        <div class="mb-3">
+                            <label for="taskTitle" class="form-label">Título</label>
+                            <input type="text" class="form-control" id="taskTitle" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="taskDescription" class="form-label">Descripción</label>
+                            <textarea class="form-control" id="taskDescription" rows="3"></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label for="taskMembers" class="form-label">Miembros</label>
+                            <input type="text" class="form-control" id="taskMembers" placeholder="Separar nombres con comas">
+                            <div id="availableMembers" class="available-members mt-2"></div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Etiquetas</label>
+                            <div class="d-flex gap-2 mb-2">
+                                <input type="text" class="form-control" id="taskTagInput" placeholder="Nombre de la etiqueta">
+                                <input type="color" class="form-control form-control-color" id="tagColor" value="#0d6efd">
+                                <button type="button" class="btn btn-outline-secondary" id="emojiPickerBtn">
+                                    <i class="fas fa-smile"></i>
+                                </button>
+                                <button type="button" class="btn btn-primary" id="addTagBtn">
+                                    <i class="fas fa-plus"></i> Agregar
+                                </button>
+                            </div>
+                            <div id="selectedTags" class="selected-tags"></div>
+                        </div>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-plus"></i> Agregar Tarea
+                        </button>
+                    </form>
+                    <div id="taskList" style="display: none;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <input type="hidden" id="currentProjectId">
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="app.js"></script>
+</body>
+
+</html>
